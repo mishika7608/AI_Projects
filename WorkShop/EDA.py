@@ -96,3 +96,112 @@ sns.histplot(dataset['Price_euros'], color = 'red')
 plt.xlabel('Price')
 plt.title('Price Distribution')
 plt.show()
+
+dataset['Price_euros'].skew()
+np.float64(1.5208655681688525)
+
+for feature in ['Company', 'TypeName', 'OpSys']:
+    plt.figure(figsize = (8,6))
+    sns.countplot(data = dataset, x = dataset[feature], palette = 'plasma')
+    plt.xticks(rotation = 'vertical')
+
+# Inflation check with 'Company'
+
+plt.figure(figsize = (12,6))
+sns.barplot(x = dataset.Company, y = dataset.Price_euros, palette = 'plasma')
+plt.title('Company vs Price')
+plt.xticks(rotation = 'vertical')
+plt.show()
+
+# Inflation check with 'Company'
+
+plt.figure(figsize = (12,6))
+sns.barplot(x = dataset.Company, y = dataset.Price_euros, palette = 'plasma')
+plt.title('Company vs Price')
+plt.xticks(rotation = 'vertical')
+plt.show()
+
+# Visualizing the TypeName
+
+plt.figure(figsize = (12,6))
+ax = sns.countplot(data = dataset, x = dataset['TypeName'], palette = 'tab10')
+
+for label in ax.containers:
+    ax.bar_label(label)
+plt.title('TypeName vs Price_euros')
+plt.xticks(rotation = 'vertical')
+plt.show()
+
+plt.figure(figsize = (12,6))
+ax = sns.barplot(data = dataset, x = dataset['TypeName'], y = dataset['Price_euros'], palette = 'Spectral')
+
+for label in ax.containers:
+    ax.bar_label(label, padding=35)
+plt.title('TypeName vs Price_euros')
+plt.xticks(rotation = 'vertical')
+plt.show()
+
+# Check ScreenResolutions
+
+dataset['ScreenResolution'].value_counts()
+
+# Visualization
+plt.figure(figsize = (15,8))
+dataset['ScreenResolution'].value_counts().plot(kind='bar')
+plt.title('Barplot : ScreenResolution')
+plt.show()
+
+# Create a feature 'TouchScreen'
+
+dataset['TouchScreen'] = dataset['ScreenResolution'].apply(lambda element:1 if 'Touchscreen' in element else 0)
+
+dataset.head()
+dataset['TouchScreen'].value_counts()
+plt.figure(figsize = (8,6))
+ax = sns.countplot(data = dataset, x = dataset['TouchScreen'], palette = 'plasma')
+plt.title('Countplot: TouchScreen')
+
+for label in ax.containers:
+    ax.bar_label(label)
+
+plt.show()
+
+# Check inflation
+
+plt.figure(figsize = (8,6))
+sns.barplot(data = dataset, x = dataset['TouchScreen'], y = dataset['Price_euros'],palette = 'plasma')
+plt.show()
+
+# Create a feature 'IPS'
+
+dataset['IPS'] = dataset['ScreenResolution'].apply(lambda element:1 if 'IPS' in element else 0)
+
+dataset.head()
+
+# Visualization
+
+plt.figure(figsize = (8,6))
+ax = sns.countplot(data = dataset, x = dataset['IPS'], palette = 'plasma')
+plt.title('Countplot: IPS')
+
+for label in ax.containers:
+    ax.bar_label(label)
+plt.show()
+
+plt.figure(figsize = (8,6))
+sns.barplot(data = dataset, x = dataset['IPS'], y = dataset['Price_euros'],palette = 'plasma')
+plt.show()
+# Extracting the X Resolution and Y Resolutions
+
+dataset['ScreenResolution'].str.split('x',n=1,expand=True)
+
+dataset['X_res'] = dataset['ScreenResolution'].str.split('x',n=1,expand=True)[0]
+dataset['Y_res'] = dataset['ScreenResolution'].str.split('x',n=1,expand=True)[1]
+dataset.head()
+
+dataset['X_res'] = dataset['X_res'].str.replace(',','').str.findall(r'(\d+\.?\d+)').apply(lambda x : x[0])
+dataset.head()
+
+dataset['X_res'] = dataset['X_res'].astype('int')
+dataset['Y_res'] = dataset['Y_res'].astype('int')
+dataset.info()

@@ -268,3 +268,90 @@ def processortype(text):
 
 dataset['Cpu_name'] = dataset['Cpu_name'].apply(lambda text:processortype(text))
 dataset.head()
+
+# Visualization of the changes made
+
+plt.figure(figsize = (8,6))
+ax = sns.countplot(data = dataset, x = dataset['Cpu_name'], palette='plasma')
+plt.xticks(rotation = 'vertical')
+
+for label in ax.containers:
+    ax.bar_label(label)
+plt.show()
+
+# Inflation with respect to cpu type
+
+plt.figure(figsize = (8,6))
+sns.barplot(data = dataset, x = dataset['Cpu_name'], y = dataset['Price_euros'], palette='plasma')
+plt.xticks(rotation = 'vertical')
+plt.show()# Now we will drop the Cpu column
+
+dataset.drop(columns = ['Cpu'],inplace=True)
+# check the dataset
+
+dataset.head()
+
+# Countplot of Ram
+
+plt.figure(figsize = (8,6))
+ax = sns.countplot(data = dataset, x = dataset['Ram_GB'], palette='plasma_r')
+plt.xticks(rotation = 'vertical')
+
+for label in ax.containers:
+    ax.bar_label(label)
+plt.show()
+# Price variations w.r.t RAM
+
+plt.figure(figsize = (8,6))
+sns.barplot(data = dataset, x = dataset['Ram_GB'], y = dataset['Price_euros'], palette='plasma_r')
+plt.xticks(rotation = 'vertical')
+plt.show()
+# 'Memory' Column
+
+dataset['Memory'].value_counts()
+
+# Preocess 'Memory' column
+
+# The two units are available - GB and TB so needs to maintain the uniformity
+
+# Remove the decimal for example 1.0 = 1
+dataset['Memory'] = dataset['Memory'].astype(str).replace('\.0','',regex=True)
+
+# Remove GB
+dataset['Memory'] = dataset['Memory'].str.replace('GB','')
+
+# Removve TB with 000
+dataset['Memory'] = dataset['Memory'].str.replace('TB','000')
+dataset['Memory'].value_counts()
+
+# Split the Memory column with +
+
+# split the text across '+'
+newdf = dataset['Memory'].str.split('+',n=1,expand=True)
+newdf
+
+dataset['Memory_first'] = newdf[0]
+dataset['Memory_first'] = dataset['Memory_first'].str.strip()
+dataset.head()
+
+# Creating a function that will take memory and and create different column of memory with suffix as the type
+
+def applychanges(value):
+
+    dataset['Memory_first-'+value] = dataset['Memory_first'].apply(lambda x:1 if value in x else 0)
+
+valueList = ['SSD', 'HDD', 'Hybrid', 'Flash Storage']
+for value in valueList:
+    applychanges(value)
+
+dataset.sample(10)
+
+# Remove all the characters just keep the numbers
+
+dataset['Memory_first'] = dataset['Memory_first'].str.replace(r'\D','',regex=True)
+dataset['Memory_first'].value_counts()
+
+# Applying same thing with memory second part as applied to memory first past 
+
+dataset['Memory_second'] = newdf[1]
+dataset.head()

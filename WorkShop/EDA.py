@@ -39,3 +39,22 @@ dataset.isnull().sum()
 
 # Check any duplicated rows
 print('No of duplicated records :', dataset.duplicated().sum())
+
+
+#Categorical Data - Categorical data in pandas is a specialized data type for variables that have a limited, fixed, and discrete number of possible values (categories).
+#Numerical Features - In pandas, numeric data refers to data types used to represent quantitative information that allows for mathematical operations.
+
+# Getting categorical and numerical feature
+cat_features = dataset.select_dtypes(include = 'object').columns
+# alternate way : [feature for feature in df.columns if df[feature].dtypes == 'object']
+num_features = dataset.select_dtypes(include = ['int32','int64','float32','float64']).columns
+# alternate way : [feature for feature in df.columns if df[feature].dtypes != 'object']
+
+# Print Categorical features
+print(cat_features)
+
+# Print Numerical features
+print(num_features)
+
+# Let's check the uniques values in the columns
+print(dataset['Company'].unique())

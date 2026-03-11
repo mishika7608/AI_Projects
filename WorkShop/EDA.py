@@ -28,5 +28,14 @@ print('DataFrame Column: ',dataset.columns)
 print('\n')
 print('No. of  features: ',len(dataset.columns))
 
+# Basic information about dataset
+# This method prints information about a DataFrame including the index dtype and columns, non-NA values and memory usage.
+print('Laptop_Price_Prediction_Dataset: \n')
+dataset.info()
 
+# Check missing values
+print('Column-wise missing values count: \n')
+dataset.isnull().sum()
 
+# Check any duplicated rows
+print('No of duplicated records :', dataset.duplicated().sum())

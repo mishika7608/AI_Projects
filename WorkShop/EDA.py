@@ -58,3 +58,13 @@ print(num_features)
 
 # Let's check the uniques values in the columns
 print(dataset['Company'].unique())
+
+# Function to get unique values present in cols
+def uniqueValues(feature):
+
+    print(f'Unique values in {feature} is : {dataset[feature].unique()}')
+
+for feature in cat_features:
+    uniqueValues(feature)
+    print('\n')
+    print('-'*100)

@@ -68,3 +68,17 @@ for feature in cat_features:
     uniqueValues(feature)
     print('\n')
     print('-'*100)
+
+# Let's start with feature 'RAM' and 'Weight' : from the observations if we remove GB and kg the easialy can be converted into int.
+dataset['Ram'] = dataset['Ram'].str.replace('GB','').astype('int32')
+
+dataset['Weight'] = dataset['Weight'].str.replace('kg','').astype('float32')
+
+# Check dtype
+print(dataset.info())
+
+# In the Ram column Ram is in GB and In weight column weight in KG 
+# So, Rename the 'Ram' -- 'Ram_GB' and 'Weight' -- 'Weight_Kg'
+dataset.rename(columns = {'Ram':'Ram_GB','Weight':'Weight_KG'}, inplace = True)
+
+print(dataset.head())

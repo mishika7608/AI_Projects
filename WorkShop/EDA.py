@@ -82,3 +82,9 @@ print(dataset.info())
 dataset.rename(columns = {'Ram':'Ram_GB','Weight':'Weight_KG'}, inplace = True)
 
 print(dataset.head())
+
+# Statistical Analysis: 5-Point Summary
+
+# Descriptive statistics include those that summarize the central tendency, dispersion and shape of a dataset’s distribution, excluding NaN values.
+print(dataset.describe())
+print(dataset.describe(include='all'))

@@ -355,3 +355,186 @@ dataset['Memory_first'].value_counts()
 
 dataset['Memory_second'] = newdf[1]
 dataset.head()
+
+# Check mising values
+
+dataset['Memory_second'].isnull().sum()
+# Fill nan value with 0
+dataset['Memory_second'] = dataset['Memory_second'].fillna("0")
+dataset['Memory_second'].value_counts()
+# Creating seperate column with memeory varients
+
+def applychanges2(value):
+
+    dataset['Memory_second-'+value] = dataset['Memory_second'].apply(lambda x:1 if value in x else 0)
+
+valueList = ['SSD', 'HDD', 'Hybrid', 'Flash Storage']
+
+for value in valueList:
+    applychanges2(value)
+
+dataset.head()
+# Remove all the characters just keep the numbers
+dataset['Memory_second'] = dataset['Memory_second'].str.replace(r'\D','',regex=True)
+dataset['Memory_second'].value_counts()
+# Converting the data type of columns Memory_first and Memory_second
+
+dataset['Memory_first'] = dataset['Memory_first'].astype('int')
+dataset['Memory_second'] = dataset['Memory_second'].astype('int')
+
+# Check dataframe information
+
+dataset.info()
+
+# Multiplying the column and storing the result in sunsequent column
+
+dataset['HDD'] = (dataset['Memory_first']*dataset['Memory_first-HDD']+dataset['Memory_second']*dataset['Memory_second-HDD'])
+dataset['SSD'] = (dataset['Memory_first']*dataset['Memory_first-SSD']+dataset['Memory_second']*dataset['Memory_second-SSD'])
+dataset['Hybrid'] = (dataset['Memory_first']*dataset['Memory_first-Hybrid']+dataset['Memory_second']*dataset['Memory_second-Hybrid'])
+dataset['Flash Storage'] = (dataset['Memory_first']*dataset['Memory_first-Flash Storage']+dataset['Memory_second']*dataset['Memory_second-Flash Storage'])
+# Check top 5 samples
+dataset.head()
+dataset.iloc[0]
+
+# As we created the seperate column for memory, lets delet few columns
+
+dataset.drop(columns = ['Memory_first','Memory_second','Memory_first-SSD', 'Memory_first-HDD', 'Memory_first-Hybrid',
+                   'Memory_first-Flash Storage','Memory_second-SSD','Memory_second-HDD', 'Memory_second-Hybrid',
+                   'Memory_second-Flash Storage'],inplace = True)
+dataset.head()
+
+dataset.drop(columns = ['Memory'], inplace = True)
+
+dataset.head()
+
+# check dataset shape
+
+dataset.shape
+
+# check the correlation between memeories and price
+
+dataset[['HDD','SSD','Hybrid','Flash Storage','Price_euros']].corr()
+
+# so drop the Hybrid and Flash Storagre column
+
+dataset.drop(columns = ['Hybrid','Flash Storage'], inplace = True)
+# Analysing 'Gpu'
+
+dataset['Gpu'].value_counts()
+
+# Create a column for GPU Brand
+
+dataset['Gpu_brand'] = dataset['Gpu'].str.split(' ').apply(lambda x:x[0])
+dataset['Gpu_brand'].value_counts()
+
+plt.figure(figsize = (8,6))
+sns.countplot(data = dataset, x = dataset['Gpu_brand'], palette = 'plasma_r')
+plt.show()
+# Remove all laptop have gpu brand 'ARM'
+
+dataset = dataset[dataset['Gpu_brand'] != 'ARM']
+
+plt.figure(figsize = (8,6))
+sns.countplot(data = dataset, x = dataset['Gpu_brand'], palette = 'plasma_r')
+plt.show()
+# Inflation with respect to GPU Brand
+
+plt.figure(figsize = (8,6))
+sns.barplot(data = dataset, x = dataset['Gpu_brand'], y = dataset['Price_euros'], palette = 'plasma_r')
+plt.show()
+dataset.drop(columns = ['Gpu'], inplace = True)
+# Operating System Analysis
+
+dataset['OpSys'].value_counts()
+# Visualization with Countplot
+
+plt.figure(figsize = (8,6))
+sns.countplot(data = dataset, x = dataset['OpSys'], palette = 'plasma_r')
+plt.xticks(rotation = 'vertical')
+plt.show()
+
+# Variation in price
+
+plt.figure(figsize = (8,6))
+sns.barplot(data = dataset, x = dataset['OpSys'], y = dataset['Price_euros'], palette = 'plasma_r')
+plt.xticks(rotation = 'vertical')
+plt.show()
+
+# Clubing Windows all variations
+
+def clubWindows(text):
+
+    if text == 'Windows 10' or text == 'Windows 10 S' or text == 'Windows 7':
+        return 'Windows'
+    elif text == 'Mac OS X' or text == 'macOS':
+        return 'MaC'
+    else:
+        return 'Others'
+
+dataset['OpSys'] = dataset['OpSys'].apply(lambda x:clubWindows(x))
+
+dataset['OpSys'].value_counts()
+
+# Visualization
+
+plt.figure(figsize = (8,6))
+sns.countplot(data = dataset, x = dataset['OpSys'], palette = 'plasma_r')
+plt.xticks(rotation = 'vertical')
+plt.show()
+
+# Variation in price
+
+plt.figure(figsize = (8,6))
+sns.barplot(data = dataset, x = dataset['OpSys'], y = dataset['Price_euros'], palette = 'plasma_r')
+plt.xticks(rotation = 'vertical')
+plt.show()
+
+# Weight Analysis
+
+dataset['Weight_KG']
+
+# Distribution plot
+
+sns.histplot(dataset['Weight_KG'])
+plt.show()
+
+# Price variations w.r.t Weight
+
+sns.scatterplot(data = dataset, x = dataset['Weight_KG'], y = dataset['Price_euros'])
+
+# Price analysis
+
+sns.histplot(dataset['Price_euros'])
+
+# apply log to normaize price
+
+sns.histplot(np.log(dataset['Price_euros']))
+df_clean = dataset.copy()
+df_clean
+
+# Creating two lists to hold the numeric and categorical dataset
+
+numF = [feature for feature in dataset.columns if dataset[feature].dtypes != 'str']
+catF = [feature for feature in dataset.columns if dataset[feature].dtypes == 'str']
+numF
+
+# create a dataframe with numeric feature
+
+dfnum = df_clean[numF]
+dfnum
+
+# checking correlation
+
+dfnum.corr()
+
+plt.figure(figsize = (12,6))
+sns.heatmap(dfnum.corr(), annot = True)
+plt.title('Correlation Heatmap')
+plt.show()
+
+# Getting my X and y
+
+X = df_clean.drop(['Price_euros'],axis=1)
+
+y = np.log(df_clean['Price_euros'])
+

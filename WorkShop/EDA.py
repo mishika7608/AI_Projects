@@ -538,3 +538,19 @@ X = df_clean.drop(['Price_euros'],axis=1)
 
 y = np.log(df_clean['Price_euros'])
 
+# Saving dataframe as csv
+
+X.to_csv('traintest.csv', index=False)
+# Model Development
+# Importing library for model building
+from sklearn.model_selection import train_test_split
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import LabelEncoder, OneHotEncoder
+from sklearn.linear_model import LinearRegression
+from sklearn import metrics
+# Spliting dataset into train and test
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.15, random_state = 2)
+
+X_train.shape, X_test.shape, y_train.shape, y_test.shape

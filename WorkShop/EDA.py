@@ -88,3 +88,11 @@ print(dataset.head())
 # Descriptive statistics include those that summarize the central tendency, dispersion and shape of a dataset’s distribution, excluding NaN values.
 print(dataset.describe())
 print(dataset.describe(include='all'))
+
+
+# From above analysis, it is clear that 'Price' feature has some skewness in data. So let's analyse the Feature 'Price_euro'
+plt.figure(figsize = (12,6))
+sns.histplot(dataset['Price_euros'], color = 'red')
+plt.xlabel('Price')
+plt.title('Price Distribution')
+plt.show()

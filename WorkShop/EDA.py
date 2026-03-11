@@ -554,3 +554,46 @@ from sklearn import metrics
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.15, random_state = 2)
 
 X_train.shape, X_test.shape, y_train.shape, y_test.shape
+
+mapper = {i:value for i,value in enumerate(X_train.columns)}
+
+mapper
+
+# columnTransformer will use to apply different trasformation to different columns
+
+step1 = ColumnTransformer(transformers = [('col_tnf', OneHotEncoder(sparse_output = False, drop = 'first'),[0,1,3,8,11])],remainder = 'passthrough')
+step2 = LinearRegression()
+regression_pipeline = Pipeline([
+    ('step1',step1),
+    ('step2',step2)
+])
+regression_pipeline.fit(X_train,y_train)
+coefficients = regression_pipeline .named_steps['step2'].coef_
+intercept = regression_pipeline .named_steps['step2'].intercept_
+
+print('coefficients\n')
+print(coefficients)
+print('\n')
+print('intercept\n')
+print(intercept)
+
+y_pred_LR = regression_pipeline.predict(X_test)
+y_pred_LR
+
+y_test
+
+print(regression_pipeline.get_params)
+
+print("MSE = ", metrics.mean_squared_error(y_test,y_pred_LR))
+
+print('MAE = ', metrics.mean_absolute_error(y_test, y_pred_LR))
+
+print('R2 score = ', metrics.r2_score(y_test,y_pred_LR))
+
+# Calculate R-squared scores
+train_r2 = metrics.r2_score(y_train, regression_pipeline.predict(X_train))
+test_r2 = metrics.r2_score(y_test, y_pred_LR)
+
+# Print the results
+print(f'Training R-squared: {train_r2}')
+print(f'Test R-squared: {test_r2}')

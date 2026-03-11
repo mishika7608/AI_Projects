@@ -251,3 +251,20 @@ dataset.head()
 
 dataset['Cpu'][0].split()[:3]
 dataset['Cpu_name'].value_counts()
+
+# This is the function to organize the column Cpu_name
+
+def processortype(text):
+
+    if text == 'Intel Core i5' or text == 'Intel Core i7' or text == 'Intel Core i3':
+        return text
+
+    else:
+        if text.split()[0] == 'Intel':
+            return 'Other Intel Processor'
+        else:
+            return 'AMD Processor'
+
+
+dataset['Cpu_name'] = dataset['Cpu_name'].apply(lambda text:processortype(text))
+dataset.head()

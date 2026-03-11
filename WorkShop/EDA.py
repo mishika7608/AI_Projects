@@ -205,3 +205,49 @@ dataset.head()
 dataset['X_res'] = dataset['X_res'].astype('int')
 dataset['Y_res'] = dataset['Y_res'].astype('int')
 dataset.info()
+
+# Droping feature 'Product'
+
+dataset.drop('Product', axis=1,inplace=True)
+
+# Correlation
+
+dataset_num = dataset[[feature for feature in dataset.columns if dataset[feature].dtypes != 'str']]
+
+plt.figure(figsize = (12,8))
+sns.heatmap(dataset_num .corr(), annot=True,cmap='plasma')
+plt.title('Correlation Map for numerical feature')
+plt.xticks(rotation=45)
+plt.show()
+
+# Let's analyze the price
+
+dataset_num.corr()['Price_euros']
+
+# Create a new column called PPI
+
+dataset['PPI'] = (np.round((dataset['X_res']**2 + dataset['Y_res']**2)**(1/2))/dataset['Inches']).astype('float')
+dataset.head()
+# Check correlation between "Price and PPI"
+
+dataset[['PPI','Price_euros']].corr()
+
+# Now I have a column created using X_res, Y_res, Inches.
+
+# So I am going to drop these columns
+
+# Now we can delete 'Inches', 'X_res' and 'Y_res'
+
+dataset.drop(columns = ['Inches','ScreenResolution', 'X_res','Y_res'],inplace=True)
+dataset.head()
+
+# Lets check the Cpu
+
+dataset['Cpu'].value_counts()
+# Create a column Cpu_name
+
+dataset['Cpu_name'] = dataset['Cpu'].apply(lambda text:" ".join(text.split()[:3]))
+dataset.head()
+
+dataset['Cpu'][0].split()[:3]
+dataset['Cpu_name'].value_counts()
